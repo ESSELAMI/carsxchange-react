@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import axiosClient from "../services/apiClient.js";
+import axiosClient from "../app/apiClient.js";
 import { useEffect } from "react";
 import { ReactNode } from "react";
 import {
