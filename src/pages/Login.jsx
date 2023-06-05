@@ -39,9 +39,9 @@ export default function Login() {
     >
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6} w="100%">
         <Stack align={"center"}>
-          <Heading fontSize={"4xl"}>Create an account</Heading>
+          <Heading fontSize={"4xl"}>Sign in to your account</Heading>
           <Text fontSize={"lg"} color={"gray.600"}>
-            to start your journey with us at
+            to continue your journey with us at
             <Link color={"blue.400"}> Cars Auction</Link> ✌️
           </Text>
         </Stack>
@@ -83,7 +83,7 @@ export default function Login() {
               </InputGroup>
             </FormControl>
 
-            <Stack spacing={10}>
+            <Stack spacing={6} mt={2}>
               <Button
                 bg={"blue.400"}
                 color={"white"}
