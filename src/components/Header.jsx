@@ -1,7 +1,9 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import axiosClient from "../app/apiClient.js";
 import { useEffect } from "react";
 import { ReactNode } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { logout, reset } from "../features/auth/authSlice.js";
 import {
   Box,
   Flex,
@@ -21,6 +23,15 @@ import {
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, AddIcon } from "@chakra-ui/icons";
 export default function Header() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const onLogout = () => {
+    dispatch(logout());
+    dispatch(reset());
+    navigate("/");
+  };
+
   const Links = ["Dashboard", "My cars", "My bids"];
   const NavLink = ({ children }) => (
     <Link
@@ -61,32 +72,48 @@ export default function Header() {
               ))}
             </HStack>
           </HStack>
-          <Flex alignItems={"center"}>
-            <Menu>
-              <MenuButton
-                as={Button}
-                rounded={"full"}
-                variant={"link"}
-                cursor={"pointer"}
-                minW={0}
+          {user ? (
+            <Flex alignItems={"center"}>
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  rounded={"full"}
+                  variant={"link"}
+                  cursor={"pointer"}
+                  minW={0}
+                >
+                  <Avatar
+                    name={"user.name"}
+                    size={"sm"}
+                    src={""}
+                    backgroundColor="blue.500"
+                    color="white"
+                  />
+                </MenuButton>
+                <MenuList>
+                  <MenuItem as="a" href="/profile">
+                    My profile
+                  </MenuItem>
+                  <MenuDivider />
+                  <MenuItem as="button" onClick={onLogout}>
+                    Logout
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+            </Flex>
+          ) : (
+            <HStack spacing={8} alignItems={"center"}>
+              <HStack
+                as={"nav"}
+                spacing={4}
+                display={{ base: "none", md: "flex" }}
               >
-                <Avatar
-                  name={"user.name"}
-                  size={"sm"}
-                  src={""}
-                  backgroundColor="blue.500"
-                  color="white"
-                />
-              </MenuButton>
-              <MenuList>
-                <MenuItem as="a" href="/profile">
-                  My profile
-                </MenuItem>
-                <MenuDivider />
-                <MenuItem>Logout</MenuItem>
-              </MenuList>
-            </Menu>
-          </Flex>
+                <Link href="/login">Login</Link>
+
+                <Link href="/register">Register</Link>
+              </HStack>
+            </HStack>
+          )}
         </Flex>
 
         {isOpen ? (

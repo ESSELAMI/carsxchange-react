@@ -1,4 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { register, reset } from "../features/auth/authSlice";
+import Spinner from "../components/Spinner";
 import {
   Flex,
   Box,
@@ -6,7 +10,6 @@ import {
   FormLabel,
   Input,
   InputGroup,
-  HStack,
   InputRightElement,
   Stack,
   Button,
@@ -17,21 +20,71 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+
 export default function Register() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
-    password2: "",
+    password_confirmation: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const { name, email, password, password2 } = formData;
+
+  const { name, email, password, password_confirmation } = formData;
+  const toast = useToast();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
+
+  useEffect(() => {
+    if (isError) {
+      toast({
+        title: "Error",
+        description: message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+    if (isSuccess || user) {
+      navigate("/");
+    }
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
+
   const onChange = (e) => {
     setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
   };
+
+  const onSubmit = (ev) => {
+    ev.preventDefault();
+
+    if (password !== password_confirmation) {
+      toast({
+        title: "Error",
+        description: "Passwords do not match",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } else {
+      const userData = {
+        name,
+        email,
+        password,
+        password_confirmation,
+      };
+
+      dispatch(register(userData));
+    }
+  };
+
   return (
     <Flex
       minH={"100vh"}
@@ -89,22 +142,24 @@ export default function Register() {
               </InputGroup>
             </FormControl>
 
-            <FormControl id="password2">
+            <FormControl id="password_confirmation">
               <FormLabel>Password Confirmation</FormLabel>
               <Input
                 type="password"
-                name="password2"
-                value={password2}
+                name="password_confirmation"
+                value={password_confirmation}
                 onChange={onChange}
               />
             </FormControl>
             <Stack spacing={10}>
               <Button
+                onClick={onSubmit}
                 bg={"blue.400"}
                 color={"white"}
                 _hover={{
                   bg: "blue.500",
                 }}
+                isLoading={isLoading} // Display loading indicator while registering
               >
                 Register
               </Button>
