@@ -7,8 +7,10 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use((config) => {
   const user = JSON.parse(localStorage.getItem("user"));
 
-  const token = user.access_token;
-  config.headers.Authorization = `Bearer ${token}`;
+  const token = user ? user.access_token : null;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
   return config;
 });
 
@@ -17,16 +19,17 @@ axiosClient.interceptors.response.use(
     return response;
   },
   (error) => {
-    const { response } = error;
-    if (response.status === 401) {
+    const response = error.response; // Assign error.response to a variable
+
+    if (response && response.status === 401) {
       localStorage.removeItem("user");
       // window.location.reload();
-    } else if (response.status === 404) {
-      //Show not found
+    } else if (response && response.status === 404) {
+      // Check if response is defined before accessing its properties
+      // Show not found
     }
 
     throw error;
   }
 );
-
 export default axiosClient;
