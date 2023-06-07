@@ -16,15 +16,15 @@ const CarCard = ({ carInfo, onBidClick }) => {
       borderRadius="md"
       overflow="hidden"
       boxShadow="md"
-      maxH={350}
-      maxW={350}
+      maxH={320}
+      maxW={300}
     >
       <Image
         src={noImage}
         alt="Car"
         borderRadius="lg"
         width="100%"
-        height={100}
+        height={150}
       />
 
       <Box p="4">
@@ -44,7 +44,7 @@ const CarCard = ({ carInfo, onBidClick }) => {
             </Text>
             <HStack justifyItems={"center"}>
               <Text fontWeight={"bold"} fontSize="md">
-                {carInfo.latestBid}
+                {carInfo.highest_bid ? carInfo.highest_bid.price : null}
               </Text>
               <Text fontWeight={"medium"} fontSize="sm">
                 AED

@@ -8,6 +8,7 @@ import noImage from "../assets/no_imager.webp";
 import CarForm from "../components/CarForm";
 import { useSelector, useDispatch } from "react-redux";
 import { createCar, getCars, reset } from "../features/car/carSlice";
+import { AddIcon } from "@chakra-ui/icons";
 function Dashboard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -35,7 +36,6 @@ function Dashboard() {
       console.log(message);
     }
     dispatch(getCars());
-    console.log("cars ====>", cars);
 
     return () => {
       dispatch(reset());
@@ -46,24 +46,32 @@ function Dashboard() {
     setSelectedCar(car);
     setDrawerOpen(true);
   };
-  if (isLoading) {
-    return <div>Loading...</div>; // Show a loading indicator while data is being fetched
-  }
+
   return (
     <>
       <Header />;
-      <Box p={10}>
-        <Button colorScheme="blue" onClick={() => setDrawerOpen(true)}>
-          Add new car {cars ? cars.length : null}
+      <Box p={8} position="relative">
+        <Button
+          colorScheme="blue"
+          onClick={() => setDrawerOpen(true)}
+          position="fixed"
+          bottom={6}
+          right={6}
+          borderRadius="full"
+          width="50px"
+          height="50px"
+          boxShadow="md"
+        >
+          <AddIcon />
         </Button>
       </Box>
-      <SimpleGrid p={10} minChildWidth={300} spacing={10}>
+      <SimpleGrid px={10} minChildWidth={300} spacing={10}>
         {cars && cars.length > 0 ? (
           cars.map((car) => (
             <CarCard
               key={car.id}
               carInfo={car}
-              latestBid={car.latestBid}
+              latestBid={car.highest_bid ? car.highest_bid.price : null}
               onBidClick={() => ({})}
             />
           ))

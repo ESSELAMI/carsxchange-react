@@ -15,7 +15,6 @@ import {
   Input,
   Select,
   Stack,
-  useDisclosure,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
@@ -24,11 +23,15 @@ import {
 } from "@chakra-ui/react";
 import { createCar, updateCar } from "../features/car/carSlice";
 
-export default function CarForm({ car, isOpen, onOpen, onClose }) {
+export default function CarForm({ car, isOpen, onClose }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [isFormSubmited, setIsFormSubmited] = useState(false);
 
-  const { id } = useParams();
+  const { isLoading, isError, message, isSuccess } = useSelector(
+    (state) => state.cars
+  );
+
   const [formData, setFormData] = useState({
     id: car?.id || null,
     brand: car?.brand || "",
@@ -39,8 +42,7 @@ export default function CarForm({ car, isOpen, onOpen, onClose }) {
     year: car?.year || "",
     seats: car?.seats || "",
   });
-  const [errors, setErrors] = useState(null);
-  const [loading, setLoading] = useState(false);
+
   const firstField = useRef();
 
   useEffect(() => {
@@ -56,49 +58,20 @@ export default function CarForm({ car, isOpen, onOpen, onClose }) {
         seats: car.seats,
       });
     }
+    if (isOpen && isFormSubmited) {
+      onClose();
+      setIsFormSubmited(false);
+    }
   }, [isOpen, car]);
 
   const onSubmit = (ev) => {
     ev.preventDefault();
-    // setLoading(true);
-    console.log(formData);
-    dispatch(createCar(formData));
-    // const request = car?.id
-    //   ? axiosClient.put(`/cars/${car.id}`, formData)
-    //   : axiosClient.post("/cars", formData);
 
-    // request
-    //   .then(() => {
-    //     setNotification(
-    //       car?.id
-    //         ? "Car was successfully updated"
-    //         : "Car was successfully created"
-    //     );
-
-    //     if (car?.id) {
-    //       setCars(
-    //         (prevCars) =>
-    //           prevCars.map((prevCar) =>
-    //             prevCar.id === car.id ? { ...prevCar, ...formData } : prevCar
-    //           ),
-    //         console.log("formData =" + formData)
-    //       );
-    //     } else {
-    //       console.log("formData =" + formData);
-    //       setCars((prevCars) => [...prevCars, formData]);
-    //     }
-
-    //     onClose();
-    //   })
-    //   .catch((err) => {
-    //     const response = err.response;
-    //     if (response && response.status === 422) {
-    //       setErrors(response.data.errors);
-    //     }
-    //   })
-    //   .finally(() => {
-    //     setLoading(false);
-    //   });
+    if (car && car.id) {
+      dispatch(updateCar(formData));
+    } else {
+      dispatch(createCar(formData));
+    }
   };
 
   return (
@@ -222,7 +195,7 @@ export default function CarForm({ car, isOpen, onOpen, onClose }) {
           <Button variant="outline" mr={3} onClick={onClose}>
             Cancel
           </Button>
-          <Button colorScheme="blue" onClick={onSubmit} isLoading={loading}>
+          <Button colorScheme="blue" onClick={onSubmit} isLoading={isLoading}>
             {car?.id ? "Update" : "Create"}
           </Button>
         </DrawerFooter>

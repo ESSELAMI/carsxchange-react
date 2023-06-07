@@ -80,7 +80,6 @@ export const carSlice = createSlice({
     builder
       .addCase(createCar.pending, (state) => {
         state.isLoading = true;
-        state.cars = [];
       })
       .addCase(createCar.fulfilled, (state, action) => {
         state.isLoading = false;

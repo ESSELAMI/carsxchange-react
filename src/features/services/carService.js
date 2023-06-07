@@ -5,7 +5,7 @@ const baseURL = `http://localhost:8000/api`;
 
 // Create new carr
 const createCar = async (carData) => {
-  const response = await apiClient.post("/cars", carData);
+  const response = await apiClient.post(baseURL+"/cars", carData);
 
   return response.data;
 };
@@ -18,14 +18,14 @@ const getCars = async (token) => {
     },
   };
 
-  const response = await axios.get("http://localhost:8000/api/cars", config);
+  const response = await axios.get( baseURL+"/cars", config);
   console.log("response.data", response.data);
   return response.data;
 };
 
 //Update car
 const updateCar = async (carData) => {
-  const response = await apiClient.put("/cars", carData);
+  const response = await apiClient.put(baseURL+"/cars", carData);
 
   return response.data;
 };
