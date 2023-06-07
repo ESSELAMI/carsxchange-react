@@ -9,9 +9,7 @@ import {
 } from "@chakra-ui/react";
 import noImage from "../assets/no_imager.webp";
 
-const CarCard = ({ carInfo, latestBid, onBidClick }) => {
-  const { imageUrl, make, model, year } = carInfo;
-
+const CarCard = ({ carInfo, onBidClick }) => {
   return (
     <Box
       borderWidth="1px"
@@ -21,14 +19,20 @@ const CarCard = ({ carInfo, latestBid, onBidClick }) => {
       maxH={350}
       maxW={350}
     >
-      <Image src={noImage} alt="Car" borderRadius="lg" width="100%" />
+      <Image
+        src={noImage}
+        alt="Car"
+        borderRadius="lg"
+        width="100%"
+        height={100}
+      />
 
       <Box p="4">
         <Stack spacing="2">
           <Text fontSize="xl" fontWeight="semibold">
-            {make} {model}
+            {carInfo.brand} {carInfo.model}
           </Text>
-          <Text color="gray.500">{year}</Text>
+          <Text color="gray.500">{carInfo.year}</Text>
         </Stack>
       </Box>
 
@@ -40,7 +44,7 @@ const CarCard = ({ carInfo, latestBid, onBidClick }) => {
             </Text>
             <HStack justifyItems={"center"}>
               <Text fontWeight={"bold"} fontSize="md">
-                {latestBid}
+                {carInfo.latestBid}
               </Text>
               <Text fontWeight={"medium"} fontSize="sm">
                 AED
