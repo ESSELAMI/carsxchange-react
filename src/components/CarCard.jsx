@@ -16,8 +16,8 @@ const CarCard = ({ carInfo, onBidClick }) => {
       borderRadius="md"
       overflow="hidden"
       boxShadow="md"
-      maxH={320}
-      maxW={300}
+      maxH={450}
+      maxW={280}
     >
       <Image
         src={noImage}
@@ -32,7 +32,11 @@ const CarCard = ({ carInfo, onBidClick }) => {
           <Text fontSize="xl" fontWeight="semibold">
             {carInfo.brand} {carInfo.model}
           </Text>
-          <Text color="gray.500">{carInfo.year}</Text>
+          <Text color="gray.500">Fuel : {carInfo.fuel_type}</Text>
+          <Text color="gray.500">Type : {carInfo.body_type}</Text>
+          <Text color="gray.500">Seats : {carInfo.seats}</Text>
+          <Text color="gray.500">Year : {carInfo.year}</Text>
+          <Text color="gray.500">Mileage : {carInfo.mileage}</Text>
         </Stack>
       </Box>
 
@@ -40,16 +44,22 @@ const CarCard = ({ carInfo, onBidClick }) => {
         <Flex justify="space-between" alignItems="center">
           <HStack>
             <Text fontSize="sm" color="gray.500">
-              Latest Bid:
+              Bid:
             </Text>
-            <HStack justifyItems={"center"}>
-              <Text fontWeight={"bold"} fontSize="md">
-                {carInfo.highest_bid ? carInfo.highest_bid.price : null}
+            {carInfo.highest_bid ? (
+              <HStack justifyItems={"center"}>
+                <Text fontWeight={"bold"} fontSize="md" color={"teal"}>
+                  {carInfo.highest_bid ? carInfo.highest_bid.price : null}
+                </Text>
+                <Text fontWeight={"medium"} fontSize="sm" color={"teal"}>
+                  AED
+                </Text>
+              </HStack>
+            ) : (
+              <Text fontWeight={"medium"} fontSize="sm" color={"red.500"}>
+                no bids yet
               </Text>
-              <Text fontWeight={"medium"} fontSize="sm">
-                AED
-              </Text>
-            </HStack>
+            )}
           </HStack>
 
           <Button colorScheme="blue" size="sm" onClick={onBidClick}>

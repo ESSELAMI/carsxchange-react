@@ -1,4 +1,8 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  createAsyncThunk,
+  createSelector,
+} from "@reduxjs/toolkit";
 import carService from "../services/carService";
 import apiClient from "../../app/apiClient";
 const initialState = {
@@ -63,6 +67,13 @@ export const updateCar = createAsyncThunk(
       return thunkAPI.rejectWithValue(message);
     }
   }
+);
+
+// Selector to filter user's cars
+export const selectUserCars = createSelector(
+  (state) => state.cars.cars,
+  (_, userId) => userId,
+  (cars, userId) => cars.filter((car) => car.user.user_id === userId)
 );
 
 export const carSlice = createSlice({

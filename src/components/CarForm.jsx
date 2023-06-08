@@ -172,6 +172,23 @@ export default function CarForm({ car, isOpen, onClose }) {
               </NumberInput>
             </Box>
             <Box>
+              <FormLabel htmlFor="seaets">Mileage </FormLabel>
+              <NumberInput
+                value={formData.mileage}
+                min={2}
+                max={999999}
+                onChange={(valueString) =>
+                  setFormData({ ...formData, mileage: parseInt(valueString) })
+                }
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </Box>
+            <Box>
               <FormLabel htmlFor="year">Year</FormLabel>
               <NumberInput
                 value={formData.year}

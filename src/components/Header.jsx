@@ -4,12 +4,13 @@ import { useEffect } from "react";
 import { ReactNode } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { logout, reset } from "../features/auth/authSlice.js";
+import { Link } from "react-router-dom";
+
 import {
   Box,
   Flex,
   Avatar,
   HStack,
-  Link,
   IconButton,
   Button,
   Menu,
@@ -67,9 +68,43 @@ export default function Header() {
               spacing={4}
               display={{ base: "none", md: "flex" }}
             >
-              {Links.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
-              ))}
+              {" "}
+              <Link
+                px={2}
+                py={1}
+                rounded={"md"}
+                _hover={{
+                  textDecoration: "none",
+                  bg: useColorModeValue("gray.200", "gray.700"),
+                }}
+                to={"/"}
+              >
+                Dashboard
+              </Link>
+              <Link
+                px={2}
+                py={1}
+                rounded={"md"}
+                _hover={{
+                  textDecoration: "none",
+                  bg: useColorModeValue("gray.200", "gray.700"),
+                }}
+                to={"/myCars"}
+              >
+                My Cars
+              </Link>
+              <Link
+                px={2}
+                py={1}
+                rounded={"md"}
+                _hover={{
+                  textDecoration: "none",
+                  bg: useColorModeValue("gray.200", "gray.700"),
+                }}
+                to={"/myBids"}
+              >
+                My bids
+              </Link>
             </HStack>
           </HStack>
           {user ? (
