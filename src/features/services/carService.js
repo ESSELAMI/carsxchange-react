@@ -10,7 +10,6 @@ const createCar = async (carData, token) => {
     },
   };
   const response = await axios.post(baseURL + "/cars", carData, config);
-  console.log("response.data", response.data);
   return response.data;
 };
 
@@ -23,7 +22,6 @@ const getCars = async (token) => {
   };
 
   const response = await axios.get(baseURL + "/cars", config);
-  console.log("response.data", response.data);
   return response.data;
 };
 
@@ -46,7 +44,6 @@ const deleteCar = async (id, token) => {
       Authorization: `Bearer ${token}`,
     },
   };
-  console.log("hna than lhag", token);
   const response = await axios.delete(baseURL + "/cars/" + id, config);
 
   return response.data;

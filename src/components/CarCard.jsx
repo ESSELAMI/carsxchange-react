@@ -49,8 +49,13 @@ const CarCard = ({
         </Stack>
       </Box>
       {isOwner ? (
-        <Box p="4" borderTopWidth="1px" borderTopColor="gray.200">
-          <Flex justify="space-between" alignItems="center">
+        <Box
+          p="4"
+          borderTopWidth="1px"
+          borderTopColor="gray.200"
+          justifyItems="center"
+        >
+          <Flex justify="center" alignItems="center">
             <Button
               colorScheme="orange"
               size="sm"
@@ -59,10 +64,6 @@ const CarCard = ({
             >
               Edit
             </Button>
-
-            {/* <Button colorScheme="red" size="sm" onClick={onDeleteClick}>
-              Delete
-            </Button> */}
           </Flex>
         </Box>
       ) : (

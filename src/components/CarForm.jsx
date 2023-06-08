@@ -63,30 +63,52 @@ export default function CarForm({ car, isOpen, onClose }) {
         year: car.year,
         seats: car.seats,
       });
-    }
-    if (isOpen && isFormSubmited) {
+    } else if (isOpen && !car) {
+      setFormData({
+        id: null,
+        brand: "",
+        model: "",
+        fuel_type: "",
+        body_type: "",
+        mileage: 0,
+        year: "",
+        seats: "",
+      });
+    } else if (isOpen && isFormSubmited) {
+      setFormData({
+        id: null,
+        brand: "",
+        model: "",
+        fuel_type: "",
+        body_type: "",
+        mileage: 0,
+        year: "",
+        seats: "",
+      });
       onClose();
       setIsFormSubmited(false);
     }
-  }, [isOpen, car]);
+  }, [isOpen, car, isFormSubmited]);
 
-  const onSubmit = (ev) => {
+  const onSubmit = async (ev) => {
     ev.preventDefault();
 
     if (car && car.id) {
-      console.log(formData);
-      dispatch(updateCar({ id: car.id, carData: formData }));
+      await dispatch(updateCar({ id: car.id, carData: formData }));
+
+      onClose();
     } else {
-      dispatch(createCar(formData));
+      await dispatch(createCar(formData));
+      onClose();
     }
   };
 
-  const onDelete = (ev) => {
+  const onDelete = async (ev) => {
     ev.preventDefault();
 
     if (car && car.id) {
-      console.log(formData);
-      dispatch(deleteCar(car.id));
+      await dispatch(deleteCar(car.id));
+      onClose();
     }
   };
 
@@ -145,6 +167,7 @@ export default function CarForm({ car, isOpen, onClose }) {
                   setFormData({ ...formData, fuel_type: ev.target.value })
                 }
               >
+                <option value=""></option>
                 <option value="Diesel">Diesel</option>
                 <option value="Diesel Hybrid">Diesel Hybrid</option>
                 <option value="Electric">Electric</option>
@@ -161,6 +184,7 @@ export default function CarForm({ car, isOpen, onClose }) {
                   setFormData({ ...formData, body_type: ev.target.value })
                 }
               >
+                <option value=""></option>
                 <option value="Hatchback">Hatchback</option>
                 <option value="Sedan">Sedan</option>
                 <option value="MUV/SUV">MUV/SUV</option>
@@ -235,7 +259,7 @@ export default function CarForm({ car, isOpen, onClose }) {
             {car?.id ? (
               <Button
                 colorScheme="red"
-                onClick={onSubmit}
+                onClick={onDelete}
                 isLoading={isLoading}
               >
                 Delete

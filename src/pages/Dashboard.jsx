@@ -1,4 +1,12 @@
-import { SimpleGrid, Box, Spinner, Button, Text } from "@chakra-ui/react";
+import {
+  SimpleGrid,
+  Box,
+  Spinner,
+  Button,
+  Text,
+  Skeleton,
+  useToast,
+} from "@chakra-ui/react";
 import Header from "../components/Header";
 
 import { useEffect, useState } from "react";
@@ -9,13 +17,16 @@ import CarForm from "../components/CarForm";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { deleteCar, getCars, reset } from "../features/car/carSlice";
 import { AddIcon } from "@chakra-ui/icons";
+
 function Dashboard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { cars } = useSelector((state) => state.cars);
   const [prevCars, setPrevCars] = useState([]);
-  const { isLoading, isError, message } = useSelector((state) => state.cars);
+  const { isLoading, isError, message, isSuccess } = useSelector(
+    (state) => state.cars
+  );
   const [formData, setFormData] = useState({
     brand: "",
     model: "",
@@ -30,13 +41,28 @@ function Dashboard() {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [selectedCar, setSelectedCar] = useState(null);
   const [initialLoad, setInitialLoad] = useState(true);
-
+  const toast = useToast();
   useEffect(() => {
     if (!user) {
       navigate("/login");
     }
     if (isError) {
-      console.log(message);
+      toast({
+        title: "Error",
+        description: message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+    if (!isLoading && isSuccess && message) {
+      toast({
+        title: "Success",
+        description: message,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
     }
 
     dispatch(getCars());
@@ -50,14 +76,14 @@ function Dashboard() {
     setSelectedCar(car);
     setDrawerOpen(true);
   };
+
   const handleDeleteClick = (car) => {
-    console.log(car.id);
     dispatch(deleteCar(car.id));
   };
 
   return (
     <>
-      <Header />;
+      <Header />
       <CarForm
         car={selectedCar}
         isOpen={isDrawerOpen}
@@ -93,9 +119,14 @@ function Dashboard() {
         display="flex"
         justifyContent="center"
         alignItems="center"
+        pb={20}
       >
         {isLoading ? (
-          <Spinner size="xl" color="blue.500" />
+          <SimpleGrid px={10} minChildWidth={280} spacing={8} w="100%">
+            {[...Array(6)].map((_, index) => (
+              <Skeleton key={index} height={450} borderRadius="md" />
+            ))}
+          </SimpleGrid>
         ) : (
           <SimpleGrid px={10} minChildWidth={280} spacing={8} w="100%">
             {cars && cars.length > 0 ? (

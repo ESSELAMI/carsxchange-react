@@ -5,7 +5,6 @@ const register = async (userData) => {
   const response = await apiClient.post("/register", userData);
 
   if (response.data) {
-    console.log("response.data");
     localStorage.setItem("user", JSON.stringify(response.data));
   }
 
@@ -17,9 +16,7 @@ const login = async (userData) => {
   const response = await apiClient.post("/login", userData);
 
   if (response.data) {
-    console.log("response.data");
     localStorage.setItem("user", JSON.stringify(response.data));
-    console.log(response.data);
   }
 
   return response.data;

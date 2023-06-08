@@ -19,9 +19,6 @@ export const getCars = createAsyncThunk("/cars/getAll", async (_, thunkAPI) => {
     const token = thunkAPI.getState().auth.user.user.access_token;
 
     return await carService.getCars(token);
-    // // return await carService.getCars(token);
-    // // console.log(response.data); // Check the response in the console
-    // return response.data;
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) ||
@@ -73,10 +70,8 @@ export const deleteCar = createAsyncThunk(
   "/cars/delete",
   async (carId, thunkAPI) => {
     try {
-      console.log("lhag hna");
       const token = thunkAPI.getState().auth.user.user.access_token;
       await carService.deleteCar(carId, token);
-      console.log("lhag hna");
       return carId; // Return the deleted car ID
     } catch (error) {
       const message =
@@ -85,7 +80,6 @@ export const deleteCar = createAsyncThunk(
           error.response.data.message) ||
         error.message ||
         error.toString();
-      console.log(error);
       return thunkAPI.rejectWithValue(message);
     }
   }
@@ -117,6 +111,7 @@ export const carSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.cars.push(action.payload);
+        state.m = "Car added with success";
       })
       .addCase(createCar.rejected, (state, action) => {
         state.isLoading = false;
@@ -137,6 +132,8 @@ export const carSlice = createSlice({
           // Update the car object in the cars array
           state.cars[updatedCarIndex] = action.payload;
         }
+
+        state.message = "Car updated with success";
       })
       .addCase(updateCar.rejected, (state, action) => {
         state.isLoading = false;
@@ -150,7 +147,7 @@ export const carSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.cars = action.payload;
-        console.log("fwf", action.payload);
+        state.message = "Cars loaded with success";
       })
       .addCase(getCars.rejected, (state, action) => {
         state.isLoading = false;
@@ -165,7 +162,7 @@ export const carSlice = createSlice({
       .addCase(deleteCar.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
-        // Remove the deleted car from the car list
+        state.message = "Car deleted with success";
         state.cars = state.cars.filter((car) => car.id !== action.payload);
       })
       .addCase(deleteCar.rejected, (state, action) => {

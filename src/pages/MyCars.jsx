@@ -35,9 +35,6 @@ function MyCars() {
     if (!user) {
       navigate("/login");
     }
-    if (isError) {
-      console.log(message);
-    }
 
     dispatch(getCars());
 
