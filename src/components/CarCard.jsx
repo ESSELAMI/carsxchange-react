@@ -8,8 +8,17 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import noImage from "../assets/no_imager.webp";
+import { useSelector } from "react-redux";
 
-const CarCard = ({ carInfo, onBidClick }) => {
+const CarCard = ({
+  carInfo,
+  onBidClick,
+  isOwner,
+  onEditClick,
+  onDeleteClick,
+}) => {
+  const { isLoading, isError, message } = useSelector((state) => state.cars);
+
   return (
     <Box
       borderWidth="1px"
@@ -39,34 +48,52 @@ const CarCard = ({ carInfo, onBidClick }) => {
           <Text color="gray.500">Mileage : {carInfo.mileage}</Text>
         </Stack>
       </Box>
+      {isOwner ? (
+        <Box p="4" borderTopWidth="1px" borderTopColor="gray.200">
+          <Flex justify="space-between" alignItems="center">
+            <Button
+              colorScheme="orange"
+              size="sm"
+              onClick={onEditClick}
+              px={20}
+            >
+              Edit
+            </Button>
 
-      <Box p="4" borderTopWidth="1px" borderTopColor="gray.200">
-        <Flex justify="space-between" alignItems="center">
-          <HStack>
-            <Text fontSize="sm" color="gray.500">
-              Bid:
-            </Text>
-            {carInfo.highest_bid ? (
-              <HStack justifyItems={"center"}>
-                <Text fontWeight={"bold"} fontSize="md" color={"teal"}>
-                  {carInfo.highest_bid ? carInfo.highest_bid.price : null}
-                </Text>
-                <Text fontWeight={"medium"} fontSize="sm" color={"teal"}>
-                  AED
-                </Text>
-              </HStack>
-            ) : (
-              <Text fontWeight={"medium"} fontSize="sm" color={"red.500"}>
-                no bids yet
+            {/* <Button colorScheme="red" size="sm" onClick={onDeleteClick}>
+              Delete
+            </Button> */}
+          </Flex>
+        </Box>
+      ) : (
+        <Box p="4" borderTopWidth="1px" borderTopColor="gray.200">
+          <Flex justify="space-between" alignItems="center">
+            <HStack>
+              <Text fontSize="sm" color="gray.500">
+                Bid:
               </Text>
-            )}
-          </HStack>
+              {carInfo.highest_bid ? (
+                <HStack justifyItems={"center"}>
+                  <Text fontWeight={"bold"} fontSize="md" color={"teal"}>
+                    {carInfo.highest_bid ? carInfo.highest_bid.price : null}
+                  </Text>
+                  <Text fontWeight={"medium"} fontSize="sm" color={"teal"}>
+                    AED
+                  </Text>
+                </HStack>
+              ) : (
+                <Text fontWeight={"medium"} fontSize="sm" color={"red.500"}>
+                  no bids yet
+                </Text>
+              )}
+            </HStack>
 
-          <Button colorScheme="blue" size="sm" onClick={onBidClick}>
-            Place a Bid
-          </Button>
-        </Flex>
-      </Box>
+            <Button colorScheme="blue" size="sm" onClick={onBidClick}>
+              Place a Bid
+            </Button>
+          </Flex>
+        </Box>
+      )}
     </Box>
   );
 };

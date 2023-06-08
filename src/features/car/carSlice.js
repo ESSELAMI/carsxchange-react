@@ -36,7 +36,7 @@ export const createCar = createAsyncThunk(
   "/cars/create",
   async (carData, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.user.token;
+      const token = thunkAPI.getState().auth.user.user.access_token;
       return await carService.createCar(carData, token);
     } catch (error) {
       const message =
@@ -53,10 +53,10 @@ export const createCar = createAsyncThunk(
 //Update car
 export const updateCar = createAsyncThunk(
   "/cars/update",
-  async (carData, thunkAPI) => {
+  async ({ id, carData }, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.user.token;
-      return await carService.updateCar(carData, token);
+      const token = thunkAPI.getState().auth.user.user.access_token;
+      return await carService.updateCar(id, carData, token);
     } catch (error) {
       const message =
         (error.response &&
@@ -68,7 +68,28 @@ export const updateCar = createAsyncThunk(
     }
   }
 );
-
+// Thunk action to delete a car
+export const deleteCar = createAsyncThunk(
+  "/cars/delete",
+  async (carId, thunkAPI) => {
+    try {
+      console.log("lhag hna");
+      const token = thunkAPI.getState().auth.user.user.access_token;
+      await carService.deleteCar(carId, token);
+      console.log("lhag hna");
+      return carId; // Return the deleted car ID
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      console.log(error);
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 // Selector to filter user's cars
 export const selectUserCars = createSelector(
   (state) => state.cars.cars,
@@ -135,6 +156,22 @@ export const carSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+      })
+      .addCase(deleteCar.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.errorMessage = "";
+      })
+      .addCase(deleteCar.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        // Remove the deleted car from the car list
+        state.cars = state.cars.filter((car) => car.id !== action.payload);
+      })
+      .addCase(deleteCar.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.errorMessage = action.payload;
       });
     //   .addCase(deleteCar.pending, (state) => {
     //     state.isLoading = true;

@@ -20,8 +20,14 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
+  HStack,
 } from "@chakra-ui/react";
-import { createCar, updateCar } from "../features/car/carSlice";
+import {
+  createCar,
+  getCars,
+  updateCar,
+  deleteCar,
+} from "../features/car/carSlice";
 
 export default function CarForm({ car, isOpen, onClose }) {
   const navigate = useNavigate();
@@ -68,9 +74,19 @@ export default function CarForm({ car, isOpen, onClose }) {
     ev.preventDefault();
 
     if (car && car.id) {
-      dispatch(updateCar(formData));
+      console.log(formData);
+      dispatch(updateCar({ id: car.id, carData: formData }));
     } else {
       dispatch(createCar(formData));
+    }
+  };
+
+  const onDelete = (ev) => {
+    ev.preventDefault();
+
+    if (car && car.id) {
+      console.log(formData);
+      dispatch(deleteCar(car.id));
     }
   };
 
@@ -212,9 +228,22 @@ export default function CarForm({ car, isOpen, onClose }) {
           <Button variant="outline" mr={3} onClick={onClose}>
             Cancel
           </Button>
-          <Button colorScheme="blue" onClick={onSubmit} isLoading={isLoading}>
-            {car?.id ? "Update" : "Create"}
-          </Button>
+          <HStack>
+            <Button colorScheme="blue" onClick={onSubmit} isLoading={isLoading}>
+              {car?.id ? "Update" : "Create"}
+            </Button>
+            {car?.id ? (
+              <Button
+                colorScheme="red"
+                onClick={onSubmit}
+                isLoading={isLoading}
+              >
+                Delete
+              </Button>
+            ) : (
+              <Box></Box>
+            )}
+          </HStack>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

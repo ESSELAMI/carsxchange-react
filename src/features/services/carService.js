@@ -3,10 +3,14 @@ import axios from "axios";
 
 const baseURL = `http://localhost:8000/api`;
 
-// Create new carr
-const createCar = async (carData) => {
-  const response = await apiClient.post(baseURL+"/cars", carData);
-
+const createCar = async (carData, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const response = await axios.post(baseURL + "/cars", carData, config);
+  console.log("response.data", response.data);
   return response.data;
 };
 
@@ -18,14 +22,32 @@ const getCars = async (token) => {
     },
   };
 
-  const response = await axios.get( baseURL+"/cars", config);
+  const response = await axios.get(baseURL + "/cars", config);
   console.log("response.data", response.data);
   return response.data;
 };
 
 //Update car
-const updateCar = async (carData) => {
-  const response = await apiClient.put(baseURL+"/cars", carData);
+const updateCar = async (id, carData, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const response = await axios.put(baseURL + "/cars/" + id, carData, config);
+
+  return response.data;
+};
+
+// Delete car
+const deleteCar = async (id, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  console.log("hna than lhag", token);
+  const response = await axios.delete(baseURL + "/cars/" + id, config);
 
   return response.data;
 };
@@ -34,6 +56,7 @@ const carService = {
   createCar,
   updateCar,
   getCars,
+  deleteCar,
 };
 
 export default carService;
