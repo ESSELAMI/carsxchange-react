@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   SimpleGrid,
   Box,
@@ -9,12 +10,13 @@ import {
 } from "@chakra-ui/react";
 import Header from "../components/Header";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CarCard from "../components/CarCard";
 import noImage from "../assets/no_imager.webp";
 import CarForm from "../components/CarForm";
-import { useSelector, useDispatch, shallowEqual } from "react-redux";
+import BidModal from "../components/BidModal";
+import { useSelector, useDispatch } from "react-redux";
 import { deleteCar, getCars, reset } from "../features/car/carSlice";
 import { AddIcon } from "@chakra-ui/icons";
 
@@ -23,25 +25,14 @@ function Dashboard() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { cars } = useSelector((state) => state.cars);
-  const [prevCars, setPrevCars] = useState([]);
   const { isLoading, isError, message, isSuccess } = useSelector(
     (state) => state.cars
   );
-  const [formData, setFormData] = useState({
-    brand: "",
-    model: "",
-    seats: 0,
-    year: "",
-    mileage: "",
-    fuel_type: "",
-    body_type: "",
-  });
-  const { brand, model, seats, year, mileage, fuel_type, body_type } = formData;
-
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [selectedCar, setSelectedCar] = useState(null);
-  const [initialLoad, setInitialLoad] = useState(true);
+  const [isBidModalOpen, setBidModalOpen] = useState(false);
   const toast = useToast();
+
   useEffect(() => {
     if (!user) {
       navigate("/login");
@@ -81,6 +72,16 @@ function Dashboard() {
     dispatch(deleteCar(car.id));
   };
 
+  const handleBidClick = (car) => {
+    setSelectedCar(car);
+    setBidModalOpen(true);
+  };
+
+  const handleBidModalClose = () => {
+    setBidModalOpen(false);
+    setSelectedCar(null);
+  };
+
   return (
     <>
       <Header />
@@ -89,8 +90,8 @@ function Dashboard() {
         isOpen={isDrawerOpen}
         onOpen={() => setDrawerOpen(true)}
         onClose={() => {
-          setDrawerOpen(false), setSelectedCar(null);
-          setFormData([]);
+          setDrawerOpen(false);
+          setSelectedCar(null);
         }}
         onUpdateCar={(updatedCar) => {
           // Update the car in the state
@@ -98,6 +99,11 @@ function Dashboard() {
             prevCars.map((c) => (c.id === updatedCar.id ? updatedCar : c))
           );
         }}
+      />
+      <BidModal
+        isOpen={isBidModalOpen}
+        onClose={handleBidModalClose}
+        car={selectedCar}
       />
       <Box p={8} position="relative">
         <Button
@@ -142,8 +148,8 @@ function Dashboard() {
                   key={car.id}
                   carInfo={car}
                   latestBid={car.highest_bid ? car.highest_bid.price : null}
-                  onBidClick={() => ({})}
-                  onEditClick={() => handleEditClick(car)} // Pass the car object to the handler
+                  onBidClick={() => handleBidClick(car)}
+                  onEditClick={() => handleEditClick(car)}
                   onDeleteClick={() => handleDeleteClick(car)}
                 />
               ))
