@@ -18,13 +18,23 @@ import {
   NumberDecrementStepper,
   Text,
 } from "@chakra-ui/react";
+import { createBid } from "../features/bid/bidSlice";
+import { useDispatch } from "react-redux";
 
 const BidModal = ({ isOpen, onClose, car }) => {
-  const [bidPrice, setBidPrice] = useState(car?.highest_bid?.price || 0);
+  const [bidPrice, setBidPrice] = useState(0);
+  const dispatch = useDispatch();
 
-  const handleBidSubmit = () => {
-    if (bidPrice > car.highest_bid?.price && bidPrice > 0) {
-      // Handle bid submission logic here
+  const handleBidSubmit = async () => {
+    const currentBid = car?.highest_bid?.price ? car.highest_bid.price : 0;
+    console.log(car.highest_bid?.price, bidPrice);
+    if (bidPrice > currentBid && bidPrice > 0) {
+      const bidData = {
+        carId: car.id,
+        price: bidPrice,
+      };
+      await dispatch(createBid(bidData));
+      onClose(); //
     } else {
       // Display an error message if the bid is not higher than the current bid
       alert("Please enter a bid higher than the current bid.");

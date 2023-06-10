@@ -35,10 +35,10 @@ export const getBids = createAsyncThunk(
 // Create new bid
 export const createBid = createAsyncThunk(
   "/cars/create",
-  async (carId, bidData, thunkAPI) => {
+  async ({ carId, price }, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.user.access_token;
-      return await bidService.createBid(carId, bidData, token);
+      return await bidService.createBid(carId, price, token);
     } catch (error) {
       const message =
         (error.response &&
@@ -46,6 +46,7 @@ export const createBid = createAsyncThunk(
           error.response.data.message) ||
         error.message ||
         error.toString();
+      console.log(error);
       return thunkAPI.rejectWithValue(message);
     }
   }
@@ -97,4 +98,4 @@ export const bidSlice = createSlice({
 });
 
 export const { reset } = bidSlice.actions;
-export default bidSliceSlice.reducer;
+export default bidSlice.reducer;

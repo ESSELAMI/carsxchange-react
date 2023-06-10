@@ -3,17 +3,21 @@ import axios from "axios";
 
 const baseURL = `http://localhost:8000/api`;
 
-const createBid = async (carId, bidData, token) => {
+const createBid = async (carId, price, token) => {
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   };
+  const data = {
+    price: price, // Include the "price" field in the request data
+  };
   const response = await axios.post(
     baseURL + "/cars/" + carId + "/bids",
-    bidData,
+    data,
     config
   );
+  console.log(response.request);
   return response.data;
 };
 
